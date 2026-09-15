@@ -28,8 +28,8 @@
 |-----|----------|--------|----------|
 | [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** | Разделение ответственности: Camunda 8 (детерминированный BPMN) + LangGraph (семантические LLM-агенты). Policy Enforcement Point между ними. |
 | [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** | SPIFFE/SPIRE для криптографической идентичности агентов, mTLS, RBAC + ABAC, append-only audit с hash-цепочкой. |
-| ADR-003 | MCP for Legacy Gateways | **Proposed** | Model Context Protocol как стандартизированный слой интеграции с 1С, ERP, ЕИС. ABAC-контроль на уровне атрибутов. |
-| ADR-004 | Observability, Audit & Cost Boundary | **Proposed** | Единый контур трейсинга (Langfuse + Jaeger), лимитирование токенов на уровне BPMN-воркеров, FinOps для LLM. |
+| [ADR-003](docs/adr/ADR-003-mcp-legacy.md) | MCP for Legacy Gateways | **Accepted** | Model Context Protocol как стандартизированный слой интеграции с 1С, ERP, ЕИС. MCP Gateway + ABAC-контроль на уровне атрибутов. |
+| [ADR-004](docs/adr/ADR-004-observability-audit-cost.md) | Observability, Audit & Cost Boundary | **Accepted** | Единый trace_id (Jaeger), append-only audit с hash-цепочкой, LLM Router с российским On-Premise стеком (Qwen, YandexGPT, GigaChat) и квотированием в ₽. |
 
 **Принципы ADR:**
 
