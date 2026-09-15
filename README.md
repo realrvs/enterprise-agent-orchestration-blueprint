@@ -17,6 +17,28 @@
 
 Документ предназначен для CTO, Head of Procurement и технических лидеров, принимающих решение о переходе к цифровому труду.
 
+
+---
+
+## Architecture Decision Records (ADR)
+
+Этот blueprint оформлен как **Enterprise Architecture Reference Kit**. Ключевые архитектурные решения зафиксированы в формате ADR (Architecture Decision Records) по шаблону Michael Nygard.
+
+| ADR | Название | Статус | Описание |
+|-----|----------|--------|----------|
+| [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** | Разделение ответственности: Camunda 8 (детерминированный BPMN) + LangGraph (семантические LLM-агенты). Policy Enforcement Point между ними. |
+| [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** | SPIFFE/SPIRE для криптографической идентичности агентов, mTLS, RBAC + ABAC, append-only audit с hash-цепочкой. |
+| ADR-003 | MCP for Legacy Gateways | **Proposed** | Model Context Protocol как стандартизированный слой интеграции с 1С, ERP, ЕИС. ABAC-контроль на уровне атрибутов. |
+| ADR-004 | Observability, Audit & Cost Boundary | **Proposed** | Единый контур трейсинга (Langfuse + Jaeger), лимитирование токенов на уровне BPMN-воркеров, FinOps для LLM. |
+
+**Принципы ADR:**
+
+- **Context** — почему возникла проблема.
+- **Decision** — что решили.
+- **Consequences** — что это даёт и какие риски.
+- **Alternatives** — что рассматривали и почему отвергли.
+
+Все ADR хранятся в [`docs/adr/`](docs/adr/).
 ---
 
 ## Часть I. Контекст и видение
