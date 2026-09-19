@@ -26,10 +26,10 @@
 
 | ADR | Название | Статус | Описание |
 |-----|----------|--------|----------|
-| [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** | Разделение ответственности: Camunda 8 (детерминированный BPMN) + LangGraph (семантические LLM-агенты). Policy Enforcement Point между ними. |
-| [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** | SPIFFE/SPIRE для криптографической идентичности агентов, mTLS, RBAC + ABAC, append-only audit с hash-цепочкой. |
-| [ADR-003](docs/adr/ADR-003-mcp-legacy.md) | MCP for Legacy Gateways | **Accepted** | Model Context Protocol как стандартизированный слой интеграции с 1С, ERP, ЕИС. MCP Gateway + ABAC-контроль на уровне атрибутов. |
-| [ADR-004](docs/adr/ADR-004-observability-audit-cost.md) | Observability, Audit & Cost Boundary | **Accepted** | Единый trace_id (Jaeger), append-only audit с hash-цепочкой, LLM Router с российским On-Premise стеком (Qwen, YandexGPT, GigaChat) и квотированием в ₽. |
+| [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** | Разделение ответственности: Camunda 8 (детерминированный BPMN) + LangGraph (семантические LLM-агенты). Policy Enforcement Point между слоями. |
+| [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** | SPIFFE/SPIRE для криптографической идентичности агентов, mTLS, RBAC + ABAC, append-only audit. |
+| [ADR-003](docs/adr/ADR-003-mcp-legacy.md) | MCP for Legacy Gateways | **Implemented** ✅ | Model Context Protocol как стандартизированный слой интеграции с legacy. MCP Gateway + RBAC + audit. Реализован в `mcp-gateway-poc`. |
+| [ADR-004](docs/adr/ADR-004-observability-audit-cost.md) | Observability, Audit & Cost Boundary | **Proposed** | Единый trace_id (Jaeger), append-only audit, LLM Router с российским On-Premise стеком. |
 
 **Принципы ADR:**
 
@@ -1147,3 +1147,49 @@ flowchart TD
 - **Масштабируемость:** добавление новых агентов без переработки всей системы.
 - **Прозрачность:** полный аудит каждого действия.
 - **Безопасность:** WIMSE-совместимая идентичность, mTLS, kill-switch.
+
+---
+
+## Reference Implementations
+
+Blueprint **подкреплён тремя работающими PoC**, которые вместе образуют **единую экосистему Agentic Orchestration**:
+
+### 1. Agentic Orchestration PoC
+
+**Репозиторий:** [github.com/realrvs/agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc)
+
+**Что реализовано:**
+- BPMN-процесс (Camunda 8.8): Validate → Approve → LLM → Policy → MCP → End
+- Python-воркер с 5 task handlers (gRPC + Zeebe)
+- Реальная LLM (Ollama + Mistral 7B, локально)
+- Policy Enforcement Point (RBAC + confidence threshold)
+- WIMSE-идентичность (`agent_svid`)
+- Интеграция с MCP Gateway
+
+**Закрывает ADR:** ADR-001, ADR-002
+
+### 2. MCP Gateway PoC
+
+**Репозиторий:** [github.com/realrvs/mcp-gateway-poc](https://github.com/realrvs/mcp-gateway-poc)
+
+**Что реализовано:**
+- MCP Gateway (FastAPI + SSE + JSON-RPC 2.0)
+- RBAC через X-Agent-SVID (WIMSE-compatible)
+- Append-only audit log в PostgreSQL
+- Mock EIS MCP Server
+- Docker Compose
+
+**Закрывает ADR:** ADR-003
+
+### 3. Reference Implementation (Day 1–5)
+
+**Репозиторий:** [github.com/realrvs/camunda](https://github.com/realrvs/camunda)
+
+**Что реализовано:**
+- Camunda 8 SaaS + Python worker
+- User Task + Camunda Form
+- XOR Gateway, Parallel Gateway
+- LLM-агент + Policy Enforcement
+
+**Закрывает ADR:** ADR-001, ADR-002
+

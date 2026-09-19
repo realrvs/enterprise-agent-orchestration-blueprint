@@ -2,7 +2,14 @@
 
 ## Status
 
-**Proposed** — 2026-09-15
+**Implemented** — 2026-09-19
+
+Verified in [mcp-gateway-poc](https://github.com/realrvs/mcp-gateway-poc):
+- MCP Gateway with SSE + JSON-RPC 2.0
+- RBAC via X-Agent-SVID (WIMSE-compatible)
+- Append-only audit log in PostgreSQL
+- Mock EIS MCP Server
+- Integrated with [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc)
 
 ## Context
 
@@ -373,3 +380,5 @@ read-heavy сценариев.
 - ADR-001: Hybrid Orchestration Core
 - ADR-002: Zero-Trust Agent Identity & WIMSE
 - ADR-004: Observability, Audit & Cost Boundary
+- **Reference Implementation:** [mcp-gateway-poc](https://github.com/realrvs/mcp-gateway-poc)
+- **Integration:** [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc) (BPMN Service Task `mcp-gateway`)
