@@ -24,12 +24,12 @@
 
 Этот blueprint оформлен как **Enterprise Architecture Reference Kit**. Ключевые архитектурные решения зафиксированы в формате ADR (Architecture Decision Records) по шаблону Michael Nygard.
 
-| ADR | Название | Статус | Описание |
-|-----|----------|--------|----------|
-| [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** | Разделение ответственности: Camunda 8 (детерминированный BPMN) + LangGraph (семантические LLM-агенты). Policy Enforcement Point между слоями. |
-| [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** | SPIFFE/SPIRE для криптографической идентичности агентов, mTLS, RBAC + ABAC, append-only audit. |
-| [ADR-003](docs/adr/ADR-003-mcp-legacy.md) | MCP for Legacy Gateways | **Implemented** ✅ | Model Context Protocol как стандартизированный слой интеграции с legacy. MCP Gateway + RBAC + audit. Реализован в `mcp-gateway-poc`. |
-| [ADR-004](docs/adr/ADR-004-observability-audit-cost.md) | Observability, Audit & Cost Boundary | **Proposed** | Единый trace_id (Jaeger), append-only audit, LLM Router с российским On-Premise стеком. |
+| ADR | Название | Статус | Реализация |
+|-----|----------|--------|-----------|
+| [ADR-001](docs/adr/ADR-001-hybrid-orchestration.md) | Hybrid Orchestration Core | **Accepted** ✅ | [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc), [camunda](https://github.com/realrvs/camunda) |
+| [ADR-002](docs/adr/ADR-002-zero-trust-identity.md) | Zero-Trust Agent Identity & WIMSE | **Accepted** ✅ | [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc), [camunda](https://github.com/realrvs/camunda) |
+| [ADR-003](docs/adr/ADR-003-mcp-legacy.md) | MCP for Legacy Gateways | **Implemented** ✅ | [mcp-gateway-poc](https://github.com/realrvs/mcp-gateway-poc) |
+| [ADR-004](docs/adr/ADR-004-observability-audit-cost.md) | Observability, Audit & Cost Boundary | **Implemented** ✅ | [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc) |
 
 **Принципы ADR:**
 
@@ -1152,7 +1152,7 @@ flowchart TD
 
 ## Reference Implementations
 
-Blueprint **подкреплён тремя работающими PoC**, которые вместе образуют **единую экосистему Agentic Orchestration**:
+Blueprint **полностью реализован** в трёх работающих репозиториях, которые образуют **единую экосистему Agentic Orchestration**:
 
 ### 1. Agentic Orchestration PoC
 
@@ -1160,13 +1160,14 @@ Blueprint **подкреплён тремя работающими PoC**, кот
 
 **Что реализовано:**
 - BPMN-процесс (Camunda 8.8): Validate → Approve → LLM → Policy → MCP → End
-- Python-воркер с 5 task handlers (gRPC + Zeebe)
+- Python worker с 5 task handlers (gRPC + Zeebe)
 - Реальная LLM (Ollama + Mistral 7B, локально)
 - Policy Enforcement Point (RBAC + confidence threshold)
 - WIMSE-идентичность (`agent_svid`)
+- Полный observability stack (Jaeger + Langfuse + Prometheus + Grafana)
 - Интеграция с MCP Gateway
 
-**Закрывает ADR:** ADR-001, ADR-002
+**Закрывает ADR:** ADR-001, ADR-002, ADR-004
 
 ### 2. MCP Gateway PoC
 

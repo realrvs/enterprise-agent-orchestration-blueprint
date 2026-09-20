@@ -1,5 +1,28 @@
 # ADR-004: Observability, Audit & Cost Boundary
 
+## Status
+
+**Implemented** — 2026-09-20
+
+Verified in [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc):
+
+**Observability stack:**
+- **Jaeger** — distributed tracing (5 operations, 9+ traces)
+- **Langfuse** — LLM observability (tokens, cost, prompts)
+- **Prometheus** — metrics (task_total, policy_decision_total, llm_confidence)
+- **Grafana** — dashboards (Task Total, Policy Decisions, P95 Duration)
+
+**Verified metrics:**
+- `task_total` — 5 task types, success counter
+- `policy_decision_total` — ALLOW/DENY counter
+- `llm_confidence` — histogram with buckets
+- `task_duration_seconds` — histogram with buckets
+- `mcp_call_total` — MCP Gateway calls by status
+
+**Audit log:**
+- Append-only in `mcp-postgres` (from mcp-gateway-poc)
+- Confirmed: `agent_svid`, `tool_name`, `decision`, `latency_ms`
+
 ## Context
 
 Гибридная оркестрация (ADR-001), WIMSE-идентичность (ADR-002) и
@@ -535,4 +558,5 @@ enterprise.
 - ADR-001: Hybrid Orchestration Core
 - ADR-002: Zero-Trust Agent Identity & WIMSE
 - ADR-003: MCP for Legacy Gateways
-
+- **Reference Implementation:** [agentic-orchestration-poc](https://github.com/realrvs/agentic-orchestration-poc)
+- **MCP Gateway:** [mcp-gateway-poc](https://github.com/realrvs/mcp-gateway-poc)
