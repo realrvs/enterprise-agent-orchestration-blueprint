@@ -892,6 +892,33 @@ escalation:
 
 Это реализация принципа наименьших привилегий (Least Privilege).
 
+**Реализация в PoC:**
+
+ABAC реализован через **OPA/Rego** в `agentic-orchestration-poc`:
+
+- **OPA** (Open Policy Agent) — Docker-контейнер на порту 8181.
+- **Политика** (`policies/abac.rego`) — RBAC + confidence + ABAC.
+- **Данные** (`policies/data.json`) — allow-list и лимиты.
+- **tool-executor** вызывает OPA через HTTP.
+
+**Проверки в OPA:**
+
+| Проверка | Условие |
+|----------|---------|
+| **RBAC** | `agent_svid` в allow-list |
+| **Confidence** | `confidence >= 0.85` |
+| **Tool** | `tool_name` в allow-list |
+| **ABAC: amount** | `amount <= 50_000_000` |
+| **ABAC: region** | `region in [Moscow, SPb, Kazan]` |
+| **ABAC: category** | `category in [IT, office, services]` |
+
+**Verified:**
+- ALLOW (amount=1.5M, Moscow, IT) → `true`
+- DENY (amount=100M) → `false` + reason
+- DENY (region=Novosibirsk) → `false`
+- DENY (category=classified) → `false`
+- DENY (confidence=0.5) → `false`
+
 ---
 
 #### 4.6.3. Dynamic Escalation Matrix
